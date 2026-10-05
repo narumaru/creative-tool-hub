@@ -1,0 +1,53 @@
+name: Publish creative tools
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Check out hub
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b
+      - name: Assemble static site with verified official PhotoCraft
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p _site
+          cp index.html style.css 404.html favicon.svg .nojekyll _site/
+          curl --fail --location --retry 3 --output /tmp/photocraft-web-0.2.0.zip \
+            https://github.com/storytold/photocraft/releases/download/v0.2.0/photocraft-web-0.2.0.zip
+          echo 'a03e6118beed115eac25e6f0d11d3a3b3a3624538bf8a77dbaebf2352bf48e5f  /tmp/photocraft-web-0.2.0.zip' | sha256sum --check -
+          unzip -q /tmp/photocraft-web-0.2.0.zip -d /tmp/photocraft-package
+          cp -a /tmp/photocraft-package/photocraft-web-0.2.0 _site/photocraft
+          for file in NOTICE ATTRIBUTION.md docs/brand/LICENSE-brand.txt assets/fonts/OFL-Inter.txt assets/fonts/OFL-JetBrainsMono.txt assets/icons/LICENSE-lucide.txt assets/dict/LICENSE-SCOWL.txt assets/app-icon/LICENSE.txt; do
+            mkdir -p "_site/photocraft/$(dirname "$file")"
+            curl --fail --location --retry 3 --output "_site/photocraft/$file" \
+              "https://raw.githubusercontent.com/storytold/photocraft/ad863217386440ca968fccc9bfff65ba24e61142/$file"
+          done
+          cp PHOTOCRAFT-PROVENANCE.json _site/photocraft/PROVENANCE.json
+          test -s _site/photocraft/photocraft-web-b33881c18c5db349_bg.wasm
+          test -s _site/photocraft/NOTICE
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa
+        with:
+          path: _site
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e
+
