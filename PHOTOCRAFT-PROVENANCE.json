@@ -1,0 +1,15 @@
+{
+  "name": "PhotoCraft",
+  "version": "0.2.0",
+  "source_repository": "https://github.com/storytold/photocraft",
+  "source_commit": "ad863217386440ca968fccc9bfff65ba24e61142",
+  "official_download_page": "https://getartcraft.com/apps/photocraft",
+  "archive_url": "https://github.com/storytold/photocraft/releases/download/v0.2.0/photocraft-web-0.2.0.zip",
+  "archive_sha256": "a03e6118beed115eac25e6f0d11d3a3b3a3624538bf8a77dbaebf2352bf48e5f",
+  "modifications": "No changes to official index.html, JavaScript or WebAssembly. Supplemental notices copied from the same source commit.",
+  "files": {
+    "index.html": "4431afbae15627f190b460f132ad734e02d61448fbc5d104364048e796d98fc9",
+    "photocraft-web-b33881c18c5db349.js": "502b11d380112c4a9816b2937186c8a8f7d69fafee162d893b3568d913c4f1ea",
+    "photocraft-web-b33881c18c5db349_bg.wasm": "4ec5c5976e44557a1ab7d4079718e41182034f8565274452e861e586b2eb5553"
+  }
+}
